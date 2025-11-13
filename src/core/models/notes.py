@@ -10,17 +10,17 @@ class Tag:
 class Note:
     def __init__(self, note_id: int, text: str, tags=None):
         """
-        Ініціалізація нотатки.
-        :param note_id: унікальний ідентифікатор
-        :param text: текст нотатки
-        :param tags: список тегів (опціонально)
+        Initialize a note.
+        :param note_id: unique identifier
+        :param text: note text
+        :param tags: list of tags (optional)
         """
         self.id = note_id
         self.text = text
         self.tags = tags or []
 
     def to_dict(self) -> dict:
-        """Повертає словник для збереження у файл або JSON."""
+        """Returns a dictionary for saving to a file or JSON."""
         return {
             "id": self.id,
             "text": self.text,
@@ -29,7 +29,7 @@ class Note:
 
     @classmethod
     def from_dict(cls, data: dict):
-        """Створює Note з словника."""
+        """Creates a Note from a dictionary."""
         return cls(
             note_id=data.get("id"),
             text=data.get("text", ""),
@@ -37,9 +37,8 @@ class Note:
         )
 
     def __str__(self):
-        """Красиве відображення нотатки для CLI."""
+        """Nicely formatted note display for CLI."""
         tags_str = ", ".join(self.tags) if self.tags else "No tags"
         return f"Note[{self.id}]: {self.text} | Tags: {tags_str}"
 
-# Note model implemented by Antonina
 
