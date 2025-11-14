@@ -155,7 +155,7 @@ class Birthday(Field):
             try:
                 # Try parsing DD.MM.YYYY format first
                 if "." in value:
-                    date_obj = datetime.strptime(value.strip(), "%d.%m.%Y")
+                    date_obj = datetime.strptime(value.strip(), default_date_format)
                 # Try parsing YYYY-MM-DD format
                 elif "-" in value:
                     date_obj = datetime.strptime(value.strip(), "%Y-%m-%d")
