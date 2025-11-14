@@ -1,12 +1,15 @@
+
 from ..services.birthday_service import BirthdayService
 
 class BirthdaysCommand:
+    # Constant for maximum allowed days
     MAX_DAYS = 365
     
     def __init__(self):
         self.service = BirthdayService()
     
     def upcoming(self, days):
+
         try:
             days_int = int(days)
             if days_int < 0:
