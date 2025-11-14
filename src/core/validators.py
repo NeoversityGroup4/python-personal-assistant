@@ -11,6 +11,7 @@ from datetime import datetime
 from typing import Optional
 
 from .errors import InvalidEmailError, InvalidPhoneError, InvalidBirthdayError
+from src.config.constants import email_pattern
 
 
 def is_email(value: str) -> bool:
@@ -31,12 +32,6 @@ def is_email(value: str) -> bool:
     """
     if not value or not isinstance(value, str):
         raise InvalidEmailError(str(value))
-
-    # Email regex pattern:
-    # - Local part: alphanumeric, dots, underscores, hyphens
-    # - @ symbol
-    # - Domain: alphanumeric with dots, ending with 2-6 letter TLD
-    email_pattern = r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$'
 
     if not re.match(email_pattern, value.strip()):
         raise InvalidEmailError(value)

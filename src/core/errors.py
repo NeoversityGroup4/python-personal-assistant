@@ -6,7 +6,7 @@ making error handling more precise and informative throughout the application.
 """
 
 from typing import Optional
-
+from uuid import UUID
 
 class ValidationError(Exception):
     """
@@ -106,14 +106,14 @@ class ContactNotFoundError(Exception):
     when the specified contact ID or name doesn't exist in the storage.
     """
 
-    def __init__(self, identifier: str) -> None:
+    def __init__(self, identifier: UUID) -> None:
         """
         Initialize the contact not found error.
 
         Args:
             identifier: The ID or name of the contact that wasn't found
         """
-        super().__init__(f"Contact not found: '{identifier}'")
+        super().__init__(f"Contact not found: '{str(identifier)}'")
         self.identifier = identifier
 
 

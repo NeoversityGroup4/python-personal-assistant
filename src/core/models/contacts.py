@@ -6,7 +6,10 @@ contact information in the personal assistant application.
 """
 
 from typing import Optional, Dict, Any
+from uuid import UUID, uuid4
 from datetime import datetime
+
+from src.config.constants import default_date_format
 
 
 class Field:
@@ -57,6 +60,10 @@ class Name(Field):
         if not value or not value.strip():
             raise ValueError("Name cannot be empty")
         super().__init__(value.strip())
+
+    def __str__(self) -> str:
+        """Return the name as a string."""
+        return self.value
 
 
 class Phone(Field):
@@ -168,9 +175,17 @@ class Birthday(Field):
             Birthday in DD.MM.YYYY format, or empty string if not set
         """
         if self.value:
-            return self.value.strftime("%d.%m.%Y")
+            return self.value.strftime(default_date_format)
         return ""
 
+    def get_date(self) -> Optional[datetime]:
+        """
+        Get the birthday as a datetime object.
+
+        Returns:
+            The birthday as a datetime object, or None if not set
+        """
+        return self.value
 
 class Contact:
     """
@@ -188,7 +203,7 @@ class Contact:
             email: Optional[str] = None,
             address: Optional[str] = None,
             birthday: Optional[str] = None,
-            contact_id: Optional[str] = None
+            contact_id: Optional[UUID] = None,
     ) -> None:
         """
         Initialize a Contact instance.
@@ -204,22 +219,21 @@ class Contact:
         Raises:
             ValueError: If name is empty or any field validation fails
         """
-        self.id: str = contact_id or self._generate_id()
+        self.id: UUID = contact_id or self._generate_id()
         self.name: Name = Name(name)
         self.phone: Optional[Phone] = Phone(phone) if phone else None
         self.email: Optional[Email] = Email(email) if email else None
         self.address: Optional[Address] = Address(address) if address else None
         self.birthday: Optional[Birthday] = Birthday(birthday) if birthday else None
 
-    def _generate_id(self) -> str:
+    def _generate_id(self) -> UUID:
         """
         Generate a unique ID for the contact.
 
         Returns:
-            A unique identifier string based on timestamp and name
+            A unique identifier UUID using uuid4()
         """
-        timestamp = datetime.now().strftime("%Y%m%d%H%M%S%f")
-        return f"contact_{timestamp}"
+        return uuid4()
 
     def to_dict(self) -> Dict[str, Any]:
         """

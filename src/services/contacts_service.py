@@ -6,12 +6,13 @@ This module provides the ContactsService class which handles all CRUD operations
 """
 
 from typing import List, Optional, Dict, Any
+from uuid import UUID
 
-from ..core.models.contacts import Contact
-from ..core.errors import (
+
+from src.core.models.contacts import Contact
+from src.core.errors import (
     ContactNotFoundError,
-    DuplicateContactError,
-    ValidationError
+    DuplicateContactError
 )
 
 
@@ -111,7 +112,7 @@ class ContactsService:
 
         return new_contact
 
-    def update(self, contact_id: str, contact_data: Dict[str, Any]) -> Contact:
+    def update(self, contact_id: UUID, contact_data: Dict[str, Any]) -> Contact:
         """
         Completely update an existing contact (replace all fields).
 
@@ -159,7 +160,7 @@ class ContactsService:
 
         return updated_contact
 
-    def patch(self, contact_id: str, updates: Dict[str, Any]) -> Contact:
+    def patch(self, contact_id: UUID, updates: Dict[str, Any]) -> Contact:
         """
         Partially update an existing contact (update only specified fields).
 
@@ -196,22 +197,22 @@ class ContactsService:
 
         if 'phone' in updates:
             if updates['phone']:
-                contact.update_phone(updates['phone'])
+                contact.phone.value = updates['phone'].strip()
             else:
                 contact.phone = None
 
         if 'email' in updates:
             if updates['email']:
-                contact.update_email(updates['email'])
+                contact.email.value = updates['email'].strip()
             else:
                 contact.email = None
 
         if 'address' in updates:
-            contact.update_address(updates['address'] or "")
+            contact.address.value = updates['address'].strip() or ""
 
         if 'birthday' in updates:
             if updates['birthday']:
-                contact.update_birthday(updates['birthday'])
+                contact.birthday.value = updates['birthday'].strip()
             else:
                 contact.birthday.value = None
 
@@ -220,7 +221,7 @@ class ContactsService:
 
         return contact
 
-    def delete(self, contact_id: str) -> bool:
+    def delete(self, contact_id: UUID) -> bool:
         """
         Delete a contact from the system.
 
@@ -277,7 +278,7 @@ class ContactsService:
                 query_lower = query.lower()
                 if (
                         query_lower in contact.name.value.lower() or
-                        (contact.phone and query_lower in contact.phone.get_raw()) or
+                        (contact.phone and query_lower in contact.phone.value.lower()) or
                         (contact.email and query_lower in contact.email.value.lower()) or
                         (contact.address and query_lower in contact.address.value.lower())
                 ):
@@ -290,7 +291,7 @@ class ContactsService:
             if name and name.lower() not in contact.name.value.lower():
                 match = False
 
-            if phone and contact.phone and phone not in contact.phone.get_raw():
+            if phone and contact.phone and phone not in contact.phone.value.lower():
                 match = False
 
             if email and contact.email and email.lower() not in contact.email.value.lower():
@@ -301,7 +302,7 @@ class ContactsService:
 
         return results
 
-    def get_by_id(self, contact_id: str) -> Optional[Contact]:
+    def get_by_id(self, contact_id: UUID) -> Optional[Contact]:
         """
         Retrieve a contact by its unique ID.
 
@@ -313,30 +314,7 @@ class ContactsService:
         """
         return self._find_by_id(contact_id)
 
-    def get_upcoming_birthdays(self, days: int = 7) -> List[Contact]:
-        """
-        Get contacts with birthdays coming up in the next N days.
-
-        Args:
-            days: Number of days to look ahead (default: 7)
-
-        Returns:
-            List of Contact objects with upcoming birthdays, sorted by days until birthday
-        """
-        upcoming = []
-
-        for contact in self._contacts:
-            if contact.birthday.get_date():
-                days_until = contact.birthday.days_until_birthday()
-                if days_until is not None and 0 <= days_until <= days:
-                    upcoming.append(contact)
-
-        # Sort by days until birthday
-        upcoming.sort(key=lambda c: c.birthday.days_until_birthday() or 0)
-
-        return upcoming
-
-    def _find_by_id(self, contact_id: str) -> Optional[Contact]:
+    def _find_by_id(self, contact_id: UUID) -> Optional[Contact]:
         """
         Internal helper method to find a contact by ID.
 
