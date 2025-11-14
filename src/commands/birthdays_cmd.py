@@ -2,7 +2,6 @@
 from ..services.birthday_service import BirthdayService
 
 class BirthdaysCommand:
-    # Constant for maximum allowed days
     MAX_DAYS = 365
     
     def __init__(self):
