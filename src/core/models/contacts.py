@@ -292,7 +292,7 @@ class Contact:
             Formatted string with all contact information
         """
         lines = [
-            f"Contact ID: {self.id}",
+            f"Contact ID: {str(self.id)}",
             f"Name: {self.name}"
         ]
 
@@ -318,6 +318,6 @@ class Contact:
             String representation showing the class name and key attributes
         """
         return (
-            f"Contact(id='{self.id}', name='{self.name}', "
+            f"Contact(id='{str(self.id)}', name='{self.name}', "
             f"phone='{self.phone}', email='{self.email}')"
         )
