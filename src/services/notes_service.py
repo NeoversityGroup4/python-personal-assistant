@@ -1,16 +1,15 @@
-# Handles CRUD for notes:
-#  - add(), delete(), find(), find_by_tags(), edit()
-#  - each note may include one or more tags
-
+from typing import Any
 from src.core.models.notes import Note
-from src.storage.file_store import FileStore  # storage backend
+from src.storage import default_store
+
 
 class NotesService:
-    def __init__(self, store=None):
+    def __init__(self, store: Any | None = None) -> None:
         """
         store: storage object (e.g., FileStore). Optional, defaults to in-memory list.
         """
-        self.store = store or FileStore()
+        # Use shared default_store if no explicit store provided
+        self.store = store or default_store
         _, notes = self.store.load()
         self.notes = notes
 
@@ -52,15 +51,12 @@ class NotesService:
         results = self.notes
         if tags:
             tags_set = set(tag.lower() for tag in tags)
-            results = [note for note in results if tags_set.intersection(t.lower() for t in note.tags)]
+            results = [
+                note
+                for note in results
+                if tags_set.intersection(t.lower() for t in note.tags)
+            ]
         if text:
             text_lower = text.lower()
             results = [note for note in results if text_lower in note.text.lower()]
         return results
-
-
-    
-
-
-
-

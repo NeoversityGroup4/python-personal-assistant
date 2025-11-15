@@ -14,7 +14,7 @@ from src.core.errors import (
     ContactNotFoundError,
     DuplicateContactError,
 )
-from src.storage.file_store import FileStore
+from src.storage import default_store
 
 
 class ContactsService:
@@ -34,8 +34,10 @@ class ContactsService:
                    Expected interface:
                    - load() -> (contacts: List[Contact], notes: List[Note])
                    - save(contacts: List[Contact], notes: List[Note]) -> None
+                   If not provided, a shared default_store is used.
         """
-        self.store = store or FileStore()
+        # Use shared default_store if no explicit store provided
+        self.store = store or default_store
         self._contacts: List[Contact] = []
         self._load_contacts()
 
