@@ -5,11 +5,8 @@ Creates shared singletons for storage and services so that all commands
 work with the same data (contacts + notes) and persistent file.
 """
 
-from src.storage.file_store import FileStore
-from src.services.contacts_service import ContactsService
-from src.services.notes_service import NotesService
-from src.services.birthday_service import BirthdayService
-from src.services.search_service import SearchService
+from src.storage import FileStore
+from src.services import ContactsService, NotesService, BirthdayService, SearchService
 
 
 # Single store instance for the whole app
