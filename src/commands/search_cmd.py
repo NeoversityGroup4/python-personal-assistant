@@ -37,7 +37,9 @@ class SearchCommand:
                     suffix = "..." if len(note.text) > GLOBAL_SEARCH_NOTE_PREVIEW else ""
                     output.append(f"Note: {preview}{suffix}")
                     if note.tags:
-                        output.append(f"  Tags: {', '.join(note.tags)}")
+                        output.append(
+                            "  Tags: " + ", ".join(str(tag) for tag in note.tags)
+                        )
                     output.append("")
 
             return "\n".join(output)
