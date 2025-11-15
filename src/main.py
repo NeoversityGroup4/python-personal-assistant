@@ -13,7 +13,9 @@ def main():
     birthdays_cmd = BirthdaysCommand()
     search_cmd = SearchCommand()
 
-    print("Personal Assistant CLI. Type 'help' to see available commands. Type 'exit' to quit.")
+    print(
+        "Personal Assistant CLI. Type 'help' to see available commands. Type 'exit' to quit."
+    )
 
     while True:
         raw = input("> ").strip()
@@ -48,7 +50,9 @@ def main():
         try:
             if command == "add-contact":
                 if not args:
-                    print("Usage: add-contact <name> [phone] [email] [address] [birthday]")
+                    print(
+                        "Usage: add-contact <name> [phone] [email] [address] [birthday]"
+                    )
                     continue
                 name = args[0]
                 phone = args[1] if len(args) > 1 else None

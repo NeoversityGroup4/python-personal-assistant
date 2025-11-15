@@ -87,7 +87,13 @@ class Phone(Field):
         if not value or not value.strip():
             raise ValueError("Phone number cannot be empty")
         # Remove common separators for storage
-        cleaned_value = value.strip().replace("-", "").replace(" ", "").replace("(", "").replace(")", "")
+        cleaned_value = (
+            value.strip()
+            .replace("-", "")
+            .replace(" ", "")
+            .replace("(", "")
+            .replace(")", "")
+        )
         super().__init__(cleaned_value)
 
 
@@ -163,7 +169,9 @@ class Birthday(Field):
                     raise ValueError("Invalid date format")
                 super().__init__(date_obj)
             except ValueError:
-                raise ValueError("Invalid birthday format. Use DD.MM.YYYY or YYYY-MM-DD")
+                raise ValueError(
+                    "Invalid birthday format. Use DD.MM.YYYY or YYYY-MM-DD"
+                )
         else:
             super().__init__(None)
 
@@ -187,6 +195,7 @@ class Birthday(Field):
         """
         return self.value
 
+
 class Contact:
     """
     Main Contact class representing a person's contact information.
@@ -197,13 +206,13 @@ class Contact:
     """
 
     def __init__(
-            self,
-            name: str,
-            phone: Optional[str] = None,
-            email: Optional[str] = None,
-            address: Optional[str] = None,
-            birthday: Optional[str] = None,
-            contact_id: Optional[UUID] = None,
+        self,
+        name: str,
+        phone: Optional[str] = None,
+        email: Optional[str] = None,
+        address: Optional[str] = None,
+        birthday: Optional[str] = None,
+        contact_id: Optional[UUID] = None,
     ) -> None:
         """
         Initialize a Contact instance.
@@ -251,7 +260,7 @@ class Contact:
             "phone": str(self.phone) if self.phone else None,
             "email": str(self.email) if self.email else None,
             "address": str(self.address) if self.address else None,
-            "birthday": str(self.birthday) if self.birthday else None
+            "birthday": str(self.birthday) if self.birthday else None,
         }
 
     @classmethod
@@ -278,7 +287,7 @@ class Contact:
             email=data.get("email"),
             address=data.get("address"),
             birthday=data.get("birthday"),
-            contact_id=UUID(str(data.get("id"))) if data.get("id") else None
+            contact_id=UUID(str(data.get("id"))) if data.get("id") else None,
         )
 
     def __str__(self) -> str:
@@ -291,10 +300,7 @@ class Contact:
         Returns:
             Formatted string with all contact information
         """
-        lines = [
-            f"Contact ID: {str(self.id)}",
-            f"Name: {self.name}"
-        ]
+        lines = [f"Contact ID: {str(self.id)}", f"Name: {self.name}"]
 
         if self.phone:
             lines.append(f"Phone: {self.phone}")

@@ -8,6 +8,7 @@ from uuid import UUID, uuid4
 
 class Text:
     """Represents the text content of a note with validation."""
+
     def __init__(self, content: str):
         if not isinstance(content, str):
             raise ValueError("Text must be a string")
@@ -31,6 +32,7 @@ class Text:
 
 class Tag:
     """Represents a single tag with validation."""
+
     def __init__(self, name: str):
         if not isinstance(name, str):
             raise ValueError("Tag name must be a string")
@@ -80,4 +82,3 @@ class Note:
         """Nicely formatted note display for CLI."""
         tags_str = ", ".join(str(tag) for tag in self.tags) if self.tags else "No tags"
         return f"Note[{self.id}]: {self.text} | Tags: {tags_str}"
-

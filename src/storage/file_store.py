@@ -10,6 +10,7 @@ from typing import List, Tuple
 
 from src.core.models.contacts import Contact
 from src.core.models.notes import Note
+from src.config.constants import DATA_FILE_NAME
 
 
 class FileStore:
@@ -38,7 +39,7 @@ class FileStore:
         """
         if file_path is None:
             # Store data in user's home directory as required by the spec
-            self.file_path = Path.home() / ".personal_assistant_data.json"
+            self.file_path = Path.home() / DATA_FILE_NAME
         else:
             self.file_path = Path(file_path)
 
