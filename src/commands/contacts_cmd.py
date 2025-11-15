@@ -1,3 +1,5 @@
+from uuid import UUID
+
 from ..services.contacts_service import ContactsService
 
 
@@ -7,29 +9,41 @@ class ContactsCommand:
 
     def add_contact(self, name, phone=None, email=None, address=None, birthday=None):
         try:
-            result = self.service.add_contact(name, phone, email, address, birthday)
-            return f"Contact '{name}'  successfully added! (ID: {result.id})"
+            contact_data = {
+                "name": name,
+                "phone": phone,
+                "email": email,
+                "address": address,
+                "birthday": birthday,
+            }
+            result = self.service.add(contact_data)
+            return f"Contact '{name}' successfully added! (ID: {result.id})"
         except Exception as e:
-            return f"Error adding  contact: {str(e)}"
+            return f"Error adding contact: {str(e)}"
 
     def edit_contact(self, contact_id, **kwargs):
         try:
-            result = self.service.edit_contact(contact_id, **kwargs)
+            cid = UUID(str(contact_id))
+            result = self.service.patch(cid, kwargs)
             return f"Contact '{result.name}' successfully updated!"
         except Exception as e:
             return f"Error editing contact: {str(e)}"
 
     def delete_contact(self, contact_id):
         try:
-            contact_name = self.service.get_contact(contact_id).name
-            self.service.delete_contact(contact_id)
+            cid = UUID(str(contact_id))
+            contact = self.service.get_by_id(cid)
+            if not contact:
+                return f"Error deleting contact: contact with id {contact_id} not found"
+            contact_name = contact.name
+            self.service.delete(cid)
             return f"Contact '{contact_name}' successfully deleted!"
         except Exception as e:
             return f"Error deleting contact: {str(e)}"
 
     def search_contacts(self, query):
         try:
-            results = self.service.search_contacts(query)
+            results = self.service.search(query=query)
             if not results:
                 return f"No contacts found for query '{query}'"
 
@@ -50,7 +64,7 @@ class ContactsCommand:
 
     def list_contacts(self):
         try:
-            contacts = self.service.get_all_contacts()
+            contacts = self.service.get_all()
             if not contacts:
                 return "Contact list is empty"
 
