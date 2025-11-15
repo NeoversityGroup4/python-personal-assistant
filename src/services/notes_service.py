@@ -2,13 +2,8 @@
 #  - add(), delete(), find(), find_by_tags(), edit()
 #  - each note may include one or more tags
 
-
-# services/notes_service.py
-
-# services/notes_service.py
-
-from core.models.notes import Note
-from storage.file_store import FileStore  # assuming this is your storage class
+from src.core.models.notes import Note
+from src.storage.file_store import FileStore  # storage backend
 
 class NotesService:
     def __init__(self, store=None):
@@ -16,7 +11,8 @@ class NotesService:
         store: storage object (e.g., FileStore). Optional, defaults to in-memory list.
         """
         self.store = store or FileStore()
-        self.notes = self.store.load()  # load existing notes from storage
+        _, notes = self.store.load()
+        self.notes = notes
 
     def get_all(self):
         return self.notes
@@ -25,7 +21,9 @@ class NotesService:
         if not isinstance(note, Note):
             raise ValueError("Expected a Note object")
         self.notes.append(note)
-        self.store.save(self.notes)
+        # Preserve existing contacts in storage
+        contacts, _ = self.store.load()
+        self.store.save(contacts, self.notes)
         return note
 
     def update(self, note_id, **kwargs):
@@ -34,7 +32,8 @@ class NotesService:
             raise ValueError(f"Note with id {note_id} not found")
         note.text = kwargs.get("text", note.text)
         note.tags = kwargs.get("tags", note.tags)
-        self.store.save(self.notes)
+        contacts, _ = self.store.load()
+        self.store.save(contacts, self.notes)
         return note
 
     def delete(self, note_id):
@@ -42,7 +41,8 @@ class NotesService:
         if not note:
             raise ValueError(f"Note with id {note_id} not found")
         self.notes.remove(note)
-        self.store.save(self.notes)
+        contacts, _ = self.store.load()
+        self.store.save(contacts, self.notes)
         return True
 
     def find(self, note_id):

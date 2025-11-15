@@ -12,8 +12,9 @@ from uuid import UUID
 from src.core.models.contacts import Contact
 from src.core.errors import (
     ContactNotFoundError,
-    DuplicateContactError
+    DuplicateContactError,
 )
+from src.storage.file_store import FileStore
 
 
 class ContactsService:
@@ -24,7 +25,7 @@ class ContactsService:
     handling validation, storage operations, and business logic.
     """
 
-    def __init__(self, store: Any) -> None:
+    def __init__(self, store: Any | None = None) -> None:
         """
         Initialize the ContactsService with a storage backend.
 
@@ -34,7 +35,7 @@ class ContactsService:
                    - load() -> (contacts: List[Contact], notes: List[Note])
                    - save(contacts: List[Contact], notes: List[Note]) -> None
         """
-        self.store = store
+        self.store = store or FileStore()
         self._contacts: List[Contact] = []
         self._load_contacts()
 

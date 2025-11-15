@@ -18,6 +18,16 @@ class Text:
     def __str__(self):
         return self.content
 
+    # Make Text behave like a string for common operations used in commands
+    def __len__(self) -> int:
+        return len(self.content)
+
+    def __getitem__(self, key):
+        return self.content[key]
+
+    def lower(self) -> str:
+        return self.content.lower()
+
 
 class Tag:
     """Represents a single tag with validation."""
@@ -28,6 +38,9 @@ class Tag:
 
     def __str__(self):
         return self.name
+
+    def lower(self) -> str:
+        return self.name.lower()
 
 
 class Note:

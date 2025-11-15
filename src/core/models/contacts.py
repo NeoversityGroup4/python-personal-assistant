@@ -246,7 +246,7 @@ class Contact:
             Dictionary containing all contact fields with their values
         """
         return {
-            "id": self.id,
+            "id": str(self.id),
             "name": str(self.name),
             "phone": str(self.phone) if self.phone else None,
             "email": str(self.email) if self.email else None,
@@ -278,7 +278,7 @@ class Contact:
             email=data.get("email"),
             address=data.get("address"),
             birthday=data.get("birthday"),
-            contact_id=data.get("id")
+            contact_id=UUID(str(data.get("id"))) if data.get("id") else None
         )
 
     def __str__(self) -> str:
