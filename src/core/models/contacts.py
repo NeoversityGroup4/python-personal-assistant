@@ -10,6 +10,7 @@ from uuid import UUID, uuid4
 from datetime import datetime
 
 from src.config.constants import default_date_format
+from src.core.validators import is_phone, normalize_phone, is_email
 
 
 class Field:
@@ -86,14 +87,12 @@ class Phone(Field):
         """
         if not value or not value.strip():
             raise ValueError("Phone number cannot be empty")
-        # Remove common separators for storage
-        cleaned_value = (
-            value.strip()
-            .replace("-", "")
-            .replace(" ", "")
-            .replace("(", "")
-            .replace(")", "")
-        )
+
+        # Validate format (raises InvalidPhoneError on failure)
+        is_phone(value.strip())
+
+        # Normalize for storage
+        cleaned_value = normalize_phone(value)
         super().__init__(cleaned_value)
 
 
@@ -116,8 +115,10 @@ class Email(Field):
         """
         if not value or not value.strip():
             raise ValueError("Email cannot be empty")
-        if "@" not in value or "." not in value.split("@")[-1]:
-            raise ValueError("Invalid email format")
+
+        # Validate format (raises InvalidEmailError on failure)
+        is_email(value.strip())
+
         super().__init__(value.strip().lower())
 
 
