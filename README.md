@@ -375,6 +375,4 @@ If you have questions or suggestions:
 
 **Made with ❤️ in Python**
 
-⭐ Star the project if you like it!
-
 </div>
