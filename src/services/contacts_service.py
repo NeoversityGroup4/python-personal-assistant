@@ -58,13 +58,8 @@ class ContactsService:
 
         This persists the current in-memory contact list to storage.
         """
-        # Load notes separately to preserve them
-        try:
-            _, notes = self.store.load()
-        except Exception:
-            notes = []
-
-        self.store.save(self._contacts, notes)
+        # Delegate persistence details to the store implementation
+        self.store.save_contacts(self._contacts)
 
     def get_all(self) -> List[Contact]:
         """

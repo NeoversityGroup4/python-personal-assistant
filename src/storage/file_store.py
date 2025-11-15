@@ -118,3 +118,20 @@ class FileStore:
             "notes": [note.to_dict() for note in notes],
         }
         self._write_raw(data)
+
+    # Convenience methods to update only one entity type --------------
+    def save_contacts(self, contacts: List[Contact]) -> None:
+        """
+        Persist only contacts, preserving existing notes on disk.
+        """
+        data = self._read_raw()
+        data["contacts"] = [contact.to_dict() for contact in contacts]
+        self._write_raw(data)
+
+    def save_notes(self, notes: List[Note]) -> None:
+        """
+        Persist only notes, preserving existing contacts on disk.
+        """
+        data = self._read_raw()
+        data["notes"] = [note.to_dict() for note in notes]
+        self._write_raw(data)

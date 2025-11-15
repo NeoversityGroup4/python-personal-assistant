@@ -21,9 +21,8 @@ class NotesService:
         if not isinstance(note, Note):
             raise ValueError("Expected a Note object")
         self.notes.append(note)
-        # Preserve existing contacts in storage
-        contacts, _ = self.store.load()
-        self.store.save(contacts, self.notes)
+        # Store is responsible for preserving other entity types
+        self.store.save_notes(self.notes)
         return note
 
     def update(self, note_id, **kwargs):
@@ -32,8 +31,7 @@ class NotesService:
             raise ValueError(f"Note with id {note_id} not found")
         note.text = kwargs.get("text", note.text)
         note.tags = kwargs.get("tags", note.tags)
-        contacts, _ = self.store.load()
-        self.store.save(contacts, self.notes)
+        self.store.save_notes(self.notes)
         return note
 
     def delete(self, note_id):
@@ -41,8 +39,7 @@ class NotesService:
         if not note:
             raise ValueError(f"Note with id {note_id} not found")
         self.notes.remove(note)
-        contacts, _ = self.store.load()
-        self.store.save(contacts, self.notes)
+        self.store.save_notes(self.notes)
         return True
 
     def find(self, note_id):
