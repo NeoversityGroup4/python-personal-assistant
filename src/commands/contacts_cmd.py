@@ -23,7 +23,7 @@ class ContactsCommand:
 
     def edit_contact(self, contact_id, **kwargs):
         try:
-            cid = UUID(str(contact_id))
+            cid = UUID(contact_id)
             result = self.service.patch(cid, kwargs)
             return f"Contact '{result.name}' successfully updated!"
         except Exception as e:
@@ -31,7 +31,7 @@ class ContactsCommand:
 
     def delete_contact(self, contact_id):
         try:
-            cid = UUID(str(contact_id))
+            cid = UUID(contact_id)
             contact = self.service.get_by_id(cid)
             if not contact:
                 return f"Error deleting contact: contact with id {contact_id} not found"
